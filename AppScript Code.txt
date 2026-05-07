@@ -1,0 +1,35 @@
+function sendGrantEmails() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+
+  // Loop through rows (skip header)
+  for (var i = 1; i < data.length; i++) {
+    
+    var name = data[i][0];
+    var email = data[i][1];
+    var business = data[i][3];
+    var resident = data[i][7];
+    var status = data[i][8]; // Email Sent column
+
+    // Check conditions
+    if (resident === "Yes" && status !== "Sent") {
+
+      var subject = "Ogun State Business Grant - Next Steps";
+      
+      var message = "Hello " + name + ",\n\n" +
+        "Congratulations! Based on your application for the Ogun State Business Grant, " +
+        "you have been shortlisted for the next stage.\n\n" +
+        "Business Name: " + business + "\n\n" +
+        "Next Steps:\n" +
+        "- You will receive further verification instructions.\n" +
+        "- Ensure your documents are ready.\n\n" +
+        "Best regards,\nOgun State Grant Team";
+
+      // Send email
+      MailApp.sendEmail(email, subject, message);
+
+      // Mark as Sent
+      sheet.getRange(i + 1, 9).setValue("Sent");
+    }
+  }
+}
